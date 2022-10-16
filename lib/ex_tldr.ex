@@ -24,6 +24,13 @@ defmodule ExTldr do
     end
   end
 
+  defp print_in_color(output) do
+    output
+    |> String.replace(~r/(`.*`\n)/, IO.ANSI.green() <> "\\1")
+    |> String.replace(~r/(- .*:\n)/, IO.ANSI.yellow() <> "\\1")
+    |> IO.puts
+  end
+
   defp process(:help) do
     IO.puts("""
     ExTldr is an Elixir client for tldr-pages
@@ -66,7 +73,7 @@ defmodule ExTldr do
   defp describe(os, term) do
     case HTTPoison.get(process_url(os, term)) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        IO.puts(body)
+        print_in_color(body)
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         IO.puts(
@@ -75,7 +82,7 @@ defmodule ExTldr do
 
         case HTTPoison.get(process_url("common", term)) do
           {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-            IO.puts(body)
+            print_in_color(body)
 
           {:ok, %HTTPoison.Response{status_code: 404}} ->
             IO.puts("Term not found on \"common\" pages.")
