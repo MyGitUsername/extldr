@@ -3,7 +3,7 @@ defmodule ExTldr do
   Documentation for ExTldr, an Elixir client for tldr-pages.
   """
 
-  #HTTPoison Application.get_env(:ex_tldr, :http_client, HTTPoison)
+  # HTTPoison Application.get_env(:ex_tldr, :http_client, HTTPoison)
 
   @doc """
   Wrapper for the CLI of the ExTldr client. 
@@ -28,7 +28,7 @@ defmodule ExTldr do
     output
     |> String.replace(~r/(`.*`\n)/, IO.ANSI.green() <> "\\1")
     |> String.replace(~r/(- .*:\n)/, IO.ANSI.yellow() <> "\\1")
-    |> IO.puts
+    |> IO.puts()
   end
 
   defp process(:help) do
