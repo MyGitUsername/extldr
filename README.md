@@ -5,7 +5,9 @@
 [![Build Status](https://img.shields.io/github/workflow/status/tldr-pages/extldr/CI.svg)](https://github.com/tldr-pages/extldr/actions)
 [![Inline docs](http://inch-ci.org/github/tldr-pages/extldr.svg?branch=HEAD&style=shields)](http://inch-ci.org/github/tldr-pages/extldr)
 
-ExTldr is an Elixir client for [tldr-pages](https://github.com/tldr-pages/tldr).
+ExTldr is an Elixir client for [tldr-pages](https://github.com/tldr-pages/tldr). The following major improvements have been made from the original repo:
+  - Colorized output
+  - Caching
 
 ## Requirement
 
