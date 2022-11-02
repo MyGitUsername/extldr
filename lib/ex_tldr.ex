@@ -5,6 +5,8 @@ defmodule ExTldr do
 
   # HTTPoison Application.get_env(:ex_tldr, :http_client, HTTPoison)
 
+  @cache_file Enum.join([File.cwd!(), "/cache/cache.txt"])
+
   @doc """
   Wrapper for the CLI of the ExTldr client. 
   """
@@ -70,22 +72,25 @@ defmodule ExTldr do
     process(os, term)
   end
 
-  defp describe(os, term) do
+  defp insert_cache(tldr, os, term) do
+    ExTldr.Cache.put({os, term}, tldr)
+    ExTldr.Cache.dump(@cache_file)
+  end
+
+  defp fetch_tldr(os, term) do
     case HTTPoison.get(process_url(os, term)) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        print_in_color(body)
+        body
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts(
-          "Term \"#{term}\" not found on \"#{os}\" pages\nExTldr is looking on \"common\" pages."
-        )
+        "Term \"#{term}\" not found on \"#{os}\" pages\nExTldr is looking on \"common\" pages."
 
         case HTTPoison.get(process_url("common", term)) do
           {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-            print_in_color(body)
+            body
 
           {:ok, %HTTPoison.Response{status_code: 404}} ->
-            IO.puts("Term not found on \"common\" pages.")
+            "Term not found on \"common\" pages."
         end
 
       {:error, %HTTPoison.Error{reason: reason}} when reason == :nxdomain ->
@@ -93,6 +98,20 @@ defmodule ExTldr do
 
       {:error, %HTTPoison.Error{reason: reason}} when reason != :nxdomain ->
         raise UnexpectedError, reason
+    end
+  end
+
+  defp describe(os, term) do
+    ExTldr.Cache.load(@cache_file)
+
+    case ExTldr.Cache.get({os, term}) do
+      nil ->
+        tldr = fetch_tldr(os, term)
+        print_in_color(tldr)
+        insert_cache(tldr, os, term)
+
+      tldr ->
+        print_in_color(tldr)
     end
   end
 end

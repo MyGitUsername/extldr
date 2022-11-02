@@ -25,3 +25,6 @@ ex_tldr-*.tar
 # Ignore another stuff
 .elixir_ls/
 .formatter.exs
+
+# Cache file
+cache/
