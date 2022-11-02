@@ -29,7 +29,8 @@ defmodule ExTldr.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {ExTldr.Application, []}
     ]
   end
 
@@ -39,7 +40,8 @@ defmodule ExTldr.MixProject do
       {:httpoison, "~> 1.8"},
       {:mox, "~> 0.5.2"},
       {:excoveralls, "~> 0.12.3", only: :test},
-      {:inch_ex, only: [:docs, :test]}
+      {:inch_ex, only: [:docs, :test]},
+      {:nebulex, "~> 2.4"}
     ]
   end
 end
